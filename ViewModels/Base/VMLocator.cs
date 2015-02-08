@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,24 +9,25 @@ namespace MVVMBasic.ViewModels.Base
 {
     public class VMLocator
     {
-        private Lazy<VMMain> _mainViewModel;
-        private Lazy<VMSimple> _simpleViewModel;
-        private Lazy<VMConverters> _convertersViewModel;
-        private Lazy<VMCommands> _commandsViewModel;
+        IContainer container;
 
         public VMLocator()
         {
-            _mainViewModel = new Lazy<VMMain>(() => new VMMain());
-            _simpleViewModel = new Lazy<VMSimple>(() => new VMSimple());
-            _convertersViewModel = new Lazy<VMConverters>(() => new VMConverters());
-            _commandsViewModel = new Lazy<VMCommands>(() => new VMCommands());
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<VMMain>();
+            builder.RegisterType<VMSimple>();
+            builder.RegisterType<VMConverters>();
+            builder.RegisterType<VMCommands>();
+
+            container = builder.Build();
         }
 
         public VMMain MainViewModel
         {
             get
             {
-                return _mainViewModel.Value;
+                return container.Resolve<VMMain>();
             }
         }
 
@@ -33,7 +35,7 @@ namespace MVVMBasic.ViewModels.Base
         {
             get
             {
-                return _simpleViewModel.Value;
+                return container.Resolve<VMSimple>();
             }
         }
 
@@ -41,7 +43,7 @@ namespace MVVMBasic.ViewModels.Base
         {
             get
             {
-                return _convertersViewModel.Value;
+                return container.Resolve<VMConverters>();
             }
         }
 
@@ -49,7 +51,7 @@ namespace MVVMBasic.ViewModels.Base
         {
             get
             {
-                return _commandsViewModel.Value;
+                return container.Resolve<VMCommands>();
             }
         }
     }
